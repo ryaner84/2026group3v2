@@ -1,109 +1,142 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Watchlist & Trade Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color-primary: #ffffff;
-            --bg-color-secondary: #f0f2f5;
-            --bg-color-tertiary: #e0e2e5;
-            --text-color-primary: #333333;
-            --text-color-secondary: #555555;
-            --border-color: #e0e0e0;
-            --primary-accent: #007bff;
-            --primary-accent-hover: #0056b3;
-            --positive-color: #28a745;
-            --negative-color: #dc3545;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --bg-primary: #F8FAFC;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #F1F5F9;
+            --border-color: #E2E8F0;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --accent-primary: #2563EB;
+            --accent-primary-hover: #1D4ED8;
+            --accent-success: #10B981;
+            --accent-danger: #EF4444;
+            --accent-danger-hover: #DC2626;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --border-radius-sm: 0.375rem; /* 6px */
+            --border-radius-md: 0.5rem;   /* 8px */
+            --border-radius-lg: 0.75rem;  /* 12px */
+            --transition-speed: 200ms;
         }
 
         body.dark-mode {
-            --bg-color-primary: #121212;
-            --bg-color-secondary: #1f1f1f;
-            --bg-color-tertiary: #333333;
-            --text-color-primary: #e0e0e0;
-            --text-color-secondary: #aaaaaa;
-            --border-color: #333333;
-            --primary-accent: #66b3ff;
-            --primary-accent-hover: #4da6ff;
-            --positive-color: #28a745; /* Can adjust for dark mode if desired */
-            --negative-color: #dc3545; /* Can adjust for dark mode if desired */
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            --bg-primary: #0F1419;
+            --bg-secondary: #1F2937;
+            --bg-tertiary: #374151;
+            --border-color: #374151;
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --accent-primary: #3B82F6;
+            --accent-primary-hover: #60A5FA;
+            --accent-danger: #F87171;
+            --accent-danger-hover: #FCA5A5;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--bg-color-primary);
-            color: var(--text-color-primary);
-            font-family: 'Inter', sans-serif; /* Using Inter, will add Google Fonts link */
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding-bottom: 60px; /* Footer height */
-            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.5;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
 
         header {
-            text-align: center;
-            padding: 20px 0;
+            padding: 16px 0;
+            background-color: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
-            background-color: var(--bg-color-primary);
-            position: relative; /* For theme toggle positioning */
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
         }
         
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         h1 {
-            color: var(--text-color-primary);
-            font-size: 2em;
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
             margin: 0;
         }
 
         .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background: none;
-            border: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--border-radius-md);
             cursor: pointer;
-            font-size: 1.5em;
-            color: var(--text-color-secondary);
-            transition: color 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            color: var(--primary-accent);
-        }
-
-        .tabs {
+            font-size: 1.25rem;
             display: flex;
+            align-items: center;
             justify-content: center;
+            transition: color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+        .theme-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+        .theme-toggle .moon-icon { display: none; }
+        .theme-toggle .sun-icon { display: block; }
+        body.dark-mode .theme-toggle .moon-icon { display: block; }
+        body.dark-mode .theme-toggle .sun-icon { display: none; }
+        
+        .tabs {
+            background-color: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
-            background-color: var(--bg-color-primary);
-            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .tab-nav {
+            display: flex;
+            gap: 16px;
         }
         .tab-button {
             background: none;
             border: none;
-            color: var(--text-color-secondary);
-            padding: 15px 20px;
+            color: var(--text-secondary);
+            padding: 12px 0;
+            margin-bottom: -1px; /* To overlap the bottom border */
             cursor: pointer;
-            font-size: 1em;
-            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: color var(--transition-speed) ease, border-color var(--transition-speed) ease;
         }
         .tab-button:hover {
-            color: var(--primary-accent);
+            color: var(--text-primary);
         }
         .tab-button.active {
-            border-bottom: 2px solid var(--primary-accent);
-            color: var(--primary-accent);
-            font-weight: bold;
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
         }
 
         main {
-            padding: 20px;
-            max-width: 1200px; /* Increased max-width for more spacious feel */
-            margin: 20px auto; /* Added top/bottom margin */
-            background-color: var(--bg-color-primary);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px var(--shadow-color);
+            padding: 32px 0;
         }
         .tab-content {
             display: none;
@@ -112,536 +145,576 @@
             display: block;
         }
 
+        /* --- Global Component Styles --- */
         .section-header {
-            font-size: 1.8em;
-            color: var(--text-color-primary);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            font-size: 1.875rem; /* 30px */
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .add-ticker {
-            display: flex;
-            gap: 10px; /* Space between input and button */
-            margin-bottom: 30px; /* More space */
+        .card {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
         }
 
+        .form-input {
+            width: 100%;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 20%, transparent);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: #FFFFFF;
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-primary-hover);
+        }
+        .btn-danger {
+            background-color: var(--accent-danger);
+            color: #FFFFFF;
+        }
+        .btn-danger:hover {
+            background-color: var(--accent-danger-hover);
+        }
+        .btn-outline {
+             background-color: transparent;
+             border-color: var(--border-color);
+             color: var(--text-primary);
+        }
+        .btn-outline:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        /* --- Watchlist & Trades Specifics --- */
+        .add-ticker-form {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
         #ticker-input {
             flex-grow: 1;
-            background-color: var(--bg-color-secondary);
-            color: var(--text-color-primary);
-            border: 1px solid var(--border-color);
-            padding: 12px 15px; /* Slightly more padding */
-            border-radius: 8px; /* More rounded */
-            font-size: 1em;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-        }
-        #ticker-input:focus {
-            border-color: var(--primary-accent);
-            outline: none;
-        }
-
-        #add-ticker-btn {
-            background-color: var(--primary-accent);
-            color: white;
-            border: none;
-            padding: 12px 25px; /* More padding */
-            border-radius: 8px; /* More rounded */
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        #add-ticker-btn:hover {
-            background-color: var(--primary-accent-hover);
-            transform: translateY(-2px);
-        }
-        #add-ticker-btn:active {
-            transform: translateY(0);
-        }
-
-        #watchlist-container, #trades-container {
-            overflow-x: auto;
-            margin-top: 20px;
         }
 
         table {
             width: 100%;
-            border-collapse: separate; /* Use separate for rounded borders */
-            border-spacing: 0;
-            border-radius: 8px; /* Rounded table corners */
-            overflow: hidden; /* Ensures rounded corners are visible */
-            box-shadow: 0 2px 8px var(--shadow-color);
-        }
-
-        table th, table td {
-            padding: 15px 20px; /* More padding */
+            border-collapse: collapse;
             text-align: left;
+        }
+        th, td {
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
-            color: var(--text-color-primary);
         }
-        table td {
-            background-color: var(--bg-color-primary);
-        }
-
-        table th {
-            background-color: var(--bg-color-tertiary);
-            font-weight: bold;
-            color: var(--text-color-secondary);
+        th {
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem; /* 14px */
             text-transform: uppercase;
-            font-size: 0.9em;
+            letter-spacing: 0.05em;
         }
-        table tr:last-child td {
-            border-bottom: none; /* No border for the last row */
+        tr:last-child td {
+            border-bottom: none;
         }
-
-        .positive { color: var(--positive-color); }
-        .negative { color: var(--negative-color); }
-
-        .remove-btn, .delete-trade-btn {
+        tr:hover {
+            background-color: var(--bg-tertiary);
+        }
+        td {
+            font-size: 0.95rem;
+        }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .positive { color: var(--accent-success); }
+        .negative { color: var(--accent-danger); }
+        .remove-btn {
             background: none;
-            border: 1px solid var(--negative-color);
-            color: var(--negative-color);
-            padding: 5px 10px;
-            border-radius: 5px;
+            border: none;
+            color: var(--text-secondary);
             cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 1.2rem;
+            padding: 4px;
         }
-        .remove-btn:hover, .delete-trade-btn:hover {
-            background-color: var(--negative-color);
-            color: white;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px 0;
-            border-top: 1px solid var(--border-color);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: var(--bg-color-primary);
-            color: var(--text-color-secondary);
-            box-shadow: 0 -2px 4px var(--shadow-color);
+        .remove-btn:hover {
+            color: var(--accent-danger);
         }
 
-        #empty-watchlist-message, #empty-trades-message {
+        .empty-state {
             text-align: center;
-            margin-top: 40px;
-            color: var(--text-color-secondary);
-            font-style: italic;
-            display: none; /* Hidden by default */
-            padding: 20px;
-            background-color: var(--bg-color-secondary);
-            border-radius: 8px;
+            padding: 48px 24px;
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            border: 2px dashed var(--border-color);
+            color: var(--text-secondary);
+            margin-top: 32px;
         }
+        .empty-state p { margin: 0; font-size: 1.1rem; }
         
-        /* Trades Section Styles */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted min-width */
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
         }
         .metric-card {
-            background-color: var(--bg-color-secondary);
-            padding: 20px; /* More padding */
-            border-radius: 10px; /* More rounded */
+            padding: 16px;
             text-align: center;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         .metric-card-label {
-            font-size: 0.9em;
-            color: var(--text-color-secondary);
-            margin-bottom: 8px; /* More space */
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
         .metric-card-value {
-            font-size: 1.8em; /* Larger value */
-            font-weight: bold;
-            color: var(--text-color-primary);
+            font-size: 2rem;
+            font-weight: 700;
         }
 
+        .trade-form-card {
+            padding: 24px;
+            margin-bottom: 32px;
+        }
         .trade-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted min-width */
-            gap: 15px; /* More space */
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px 24px;
             align-items: flex-end;
-            background-color: var(--bg-color-secondary);
-            padding: 30px; /* More padding */
-            border-radius: 10px; /* More rounded */
-            margin-bottom: 40px; /* More space */
-            box-shadow: 0 2px 10px var(--shadow-color);
         }
-        .trade-form input {
-            background-color: var(--bg-color-tertiary);
-            color: var(--text-color-primary);
-            border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 1em;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-        }
-        .trade-form input:focus {
-            border-color: var(--primary-accent);
-            outline: none;
-        }
-        .trade-form .form-group {
+        .form-group {
             display: flex;
             flex-direction: column;
         }
-        .trade-form label {
-            margin-bottom: 8px; /* More space */
-            font-size: 0.9em;
-            color: var(--text-color-secondary);
+        .form-group label {
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
         }
-        #log-trade-btn {
-            background-color: var(--positive-color); /* Green for logging trade */
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            grid-column: 1 / -1; /* Span full width */
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        #log-trade-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
+        .form-group-full {
+            grid-column: 1 / -1;
         }
         #pnl-preview {
             text-align: center;
-            padding: 15px;
-            font-weight: bold;
+            padding: 12px;
+            font-weight: 600;
+            border-radius: var(--border-radius-md);
+            background-color: var(--bg-primary);
             grid-column: 1 / -1;
-            background-color: var(--bg-color-tertiary);
-            border-radius: 8px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
-
+        
         .trades-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
-        #clear-all-trades-btn {
-            background-color: var(--negative-color);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+        .trades-header h2 {
+            font-size: 1.5rem;
+            margin: 0;
         }
-        #clear-all-trades-btn:hover {
-            background-color: #c82333;
-            transform: translateY(-2px);
+        
+        /* --- News Section --- */
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        #news-last-updated {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .news-card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* for image border-radius */
+        }
+        .news-card-img-link {
+            display: block;
+            height: 180px;
+            background-color: var(--bg-tertiary);
+        }
+        .news-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .news-card-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .news-card-headline {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: var(--text-primary);
+        }
+        .news-card-summary {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-grow: 1;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+        }
+        .news-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .news-card-source {
+            font-weight: 600;
+        }
+        .news-card a {
+            text-decoration: none;
         }
 
-
-        @media (max-width: 768px) { /* Adjusted breakpoint */
-            main {
-                padding: 15px;
-                margin: 15px auto;
-            }
-            table th, table td {
-                padding: 12px 10px;
-            }
-            .theme-toggle {
-                top: 15px;
-                right: 15px;
-            }
-
-            .add-ticker {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            #ticker-input, #add-ticker-btn {
-                width: 100%;
-                box-sizing: border-box;
-                margin-left: 0;
-            }
-            #add-ticker-btn {
-                padding: 15px;
-            }
-
-            .trade-form {
-                grid-template-columns: 1fr; /* Stack inputs on small screens */
-                padding: 20px;
-            }
-            .trade-form .form-group {
-                width: 100%;
-            }
-            #log-trade-btn, #pnl-preview {
-                 grid-column: auto; /* Reset grid-column for smaller screens */
-                 width: 100%;
-                 box-sizing: border-box;
-            }
+        /* --- Skeleton Loaders --- */
+        .skeleton {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius-md);
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-            .tab-button {
-                padding: 10px 15px;
-                font-size: 0.9em;
-            }
-            .section-header {
-                font-size: 1.5em;
-            }
-            .metric-card-value {
-                font-size: 1.4em;
-            }
-            .remove-btn, .delete-trade-btn {
-                font-size: 0.8em;
-                padding: 3px 6px;
-            }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .skeleton-text {
+            height: 1em;
+            margin-bottom: 0.5em;
+        }
+        .skeleton-text:last-child {
+            margin-bottom: 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 24px 0;
+            margin-top: 32px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        #watchlist-last-updated { font-weight: 600; }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.25rem; }
+            .container { padding: 0 16px; }
+            .add-ticker-form { flex-direction: column; gap: 12px; }
+            .trade-form { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>Stock Watchlist & Trade Tracker</h1>
+        <div class="container header-content">
+            <h1>Stock Tracker</h1>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span class="sun-icon">☀️</span>
+                <span class="moon-icon">🌙</span>
+            </button>
+        </div>
     </header>
 
     <div class="tabs">
-        <button class="tab-button active" data-tab="watchlist">Watchlist</button>
-        <button class="tab-button" data-tab="trades">Trades</button>
+        <div class="container">
+             <nav class="tab-nav">
+                <button class="tab-button active" data-tab="watchlist">Watchlist</button>
+                <button class="tab-button" data-tab="trades">Trades</button>
+                <button class="tab-button" data-tab="news">News</button>
+            </nav>
+        </div>
     </div>
 
-    <main>
+    <main class="container">
+        <!-- WATCHLIST TAB -->
         <div id="watchlist" class="tab-content active">
-            <div class="add-ticker">
-                <input type="text" id="ticker-input" placeholder="Ticker symbol">
-                <button id="add-ticker-btn">Add</button>
-            </div>
-            <div id="watchlist-container">
+            <form id="add-ticker-form" class="add-ticker-form">
+                <input type="text" id="ticker-input" class="form-input" placeholder="Add ticker (e.g., AAPL)">
+                <button type="submit" id="add-ticker-btn" class="btn btn-primary">Add Ticker</button>
+            </form>
+            <div class="card">
                 <table id="watchlist-table">
                     <thead>
                         <tr>
                             <th>Ticker</th>
-                            <th>Price</th>
-                            <th>Change ($)</th>
-                            <th>Change (%)</th>
-                            <th>Action</th>
+                            <th class="text-right">Price</th>
+                            <th class="text-right">Change ($)</th>
+                            <th class="text-right">Change (%)</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Stock rows will be inserted here -->
-                    </tbody>
+                    <tbody></tbody>
                 </table>
-                <p id="empty-watchlist-message">Add a ticker to get started</p>
+            </div>
+            <div id="empty-watchlist-message" class="empty-state" style="display: none;">
+                <p>Your watchlist is empty. Add a stock ticker to get started.</p>
             </div>
         </div>
 
+        <!-- TRADES TAB -->
         <div id="trades" class="tab-content">
             <div id="metrics-grid" class="metrics-grid"></div>
             
-            <form id="trade-log-form" class="trade-form">
-                <div class="form-group">
-                    <label for="trade-ticker">Ticker</label>
-                    <input type="text" id="trade-ticker" required>
-                </div>
-                <div class="form-group">
-                    <label for="trade-entry">Entry Price</label>
-                    <input type="number" id="trade-entry" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="trade-exit">Exit Price</label>
-                    <input type="number" id="trade-exit" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="trade-shares">Shares</label>
-                    <input type="number" id="trade-shares" step="1" required>
-                </div>
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <label for="trade-notes">Notes</label>
-                    <input type="text" id="trade-notes">
-                </div>
-                <div id="pnl-preview">P&L: $0.00</div>
-                <button type="submit" id="log-trade-btn">Log Trade</button>
-            </form>
+            <div class="card trade-form-card">
+                 <form id="trade-log-form" class="trade-form">
+                    <div class="form-group">
+                        <label for="trade-ticker">Ticker</label>
+                        <input type="text" id="trade-ticker" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trade-entry">Entry Price</label>
+                        <input type="number" id="trade-entry" class="form-input" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trade-exit">Exit Price</label>
+                        <input type="number" id="trade-exit" class="form-input" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trade-shares">Shares</label>
+                        <input type="number" id="trade-shares" class="form-input" step="1" min="1" required>
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="trade-notes">Notes (optional)</label>
+                        <input type="text" id="trade-notes" class="form-input">
+                    </div>
+                    <div id="pnl-preview" class="form-group-full">P&L: $0.00</div>
+                    <button type="submit" id="log-trade-btn" class="btn btn-primary form-group-full" style="background-color: var(--accent-success);">Log Trade</button>
+                </form>
+            </div>
 
             <div class="trades-header">
-                <h2>Recent Trades</h2>
-                <button id="clear-all-trades-btn">Clear All Trades</button>
+                <h2>Trade History</h2>
+                <button id="clear-all-trades-btn" class="btn btn-danger">Clear All</button>
             </div>
-            <div id="trades-container">
-                <table id="trades-table">
+            <div class="card">
+                 <table id="trades-table">
                     <thead>
                         <tr>
                             <th>Ticker</th>
-                            <th>Entry</th>
-                            <th>Exit</th>
-                            <th>Shares</th>
-                            <th>P&L ($)</th>
+                            <th class="text-right">Entry</th>
+                            <th class="text-right">Exit</th>
+                            <th class="text-right">Shares</th>
+                            <th class="text-right">P&L ($)</th>
                             <th>Notes</th>
                             <th>Date</th>
-                            <th>Action</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Trade rows will be inserted here -->
-                    </tbody>
+                    <tbody></tbody>
                 </table>
-                <p id="empty-trades-message">No trades logged yet</p>
+            </div>
+             <div id="empty-trades-message" class="empty-state" style="display: none;">
+                <p>No trades logged yet. Use the form above to add your first trade.</p>
             </div>
         </div>
+        
+        <!-- NEWS TAB -->
+        <div id="news" class="tab-content">
+            <div class="news-header">
+                <div>
+                    <h2 style="margin: 0; font-size: 1.5rem;">Market News</h2>
+                    <span id="news-last-updated"></span>
+                </div>
+                <button id="refresh-news-btn" class="btn btn-outline">Refresh</button>
+            </div>
+            <div id="news-grid" class="news-grid">
+                <!-- Skeleton loaders -->
+            </div>
+            <div id="empty-news-message" class="empty-state" style="display: none;">
+                <p>Could not load news at this time. Please try again later.</p>
+            </div>
+        </div>
+
     </main>
 
     <footer>
-        <p>Last updated: <span id="last-updated">-</span></p>
+        <div class="container">
+            <p>Data from Finnhub. Last watchlist update: <span id="watchlist-last-updated">-</span></p>
+        </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- API & CONFIG ---
+            const finnhubApiKey = 'd82lfuhr01qmgc0gjtjgd82lfuhr01qmgc0gjtk0'; 
+            
+            // --- THEME ---
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+            };
+            
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                applyTheme(prefersDark ? 'dark' : 'light');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            });
 
             // --- TABS ---
             const tabButtons = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
-
             tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     tabButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-
                     tabContents.forEach(content => content.classList.remove('active'));
                     document.getElementById(button.dataset.tab).classList.add('active');
                 });
             });
 
+            // --- SHARED ELEMENTS & FUNCTIONS ---
+            const watchlistLastUpdated = document.getElementById('watchlist-last-updated');
+            const formatPrice = (num) => typeof num !== 'number' ? 'N/A' : `$${num.toFixed(2)}`;
+            const formatChange = (num) => typeof num !== 'number' ? 'N/A' : (num > 0 ? `+$${num.toFixed(2)}` : `-$${Math.abs(num).toFixed(2)}`);
+            const formatPercent = (num) => typeof num !== 'number' ? 'N/A' : `${num.toFixed(2)}%`;
+
             // --- WATCHLIST ---
+            const tickerForm = document.getElementById('add-ticker-form');
             const tickerInput = document.getElementById('ticker-input');
-            const addTickerBtn = document.getElementById('add-ticker-btn');
-            const watchlistTable = document.getElementById('watchlist-table');
-            const watchlistTableBody = watchlistTable.querySelector('tbody');
+            const watchlistTableBody = document.getElementById('watchlist-table').querySelector('tbody');
             const emptyWatchlistMessage = document.getElementById('empty-watchlist-message');
-            const lastUpdated = document.getElementById('last-updated');
-
-            const finnhubApiKey = 'd82lfuhr01qmgc0gjtjgd82lfuhr01qmgc0gjtk0';
-            const finnhubApiUrl = 'https://finnhub.io/api/v1/quote';
-
             let watchlist = [];
 
-            function saveWatchlist() {
-                const symbols = watchlist.map(stock => stock.symbol);
-                localStorage.setItem('watchlist', JSON.stringify(symbols));
-            }
-
-            async function loadWatchlistAndFetch() {
-                const savedSymbols = JSON.parse(localStorage.getItem('watchlist')) || [];
-                if (savedSymbols.length === 0) {
-                    displayWatchlist();
-                    return;
-                }
-                const priceDataPromises = savedSymbols.map(symbol => fetchPrice(symbol));
-                const results = await Promise.all(priceDataPromises);
-                watchlist = results.map((priceData, index) => priceData ? { symbol: savedSymbols[index], ...priceData } : null).filter(Boolean);
-                displayWatchlist();
-                updatePrices();
-            }
-
-            function formatPrice(num) {
-                return typeof num !== 'number' ? '-' : num.toFixed(2);
-            }
-
-            function formatPercent(num) {
-                return typeof num !== 'number' ? '-' : (num > 0 ? '+' : '') + num.toFixed(2) + '%';
-            }
-
-            async function fetchPrice(symbol) {
+            const saveWatchlist = () => localStorage.setItem('watchlist', JSON.stringify(watchlist.map(s => s.symbol)));
+            
+            const fetchQuote = async (symbol) => {
                 try {
-                    const response = await fetch(`${finnhubApiUrl}?symbol=${symbol}&token=${finnhubApiKey}`);
-                    if (!response.ok) throw new Error(`Network response was not ok for ${symbol}`);
+                    const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${finnhubApiKey}`);
+                    if (!response.ok) throw new Error(`Network response error for ${symbol}`);
                     const data = await response.json();
-                    if (data.c === 0 && data.d === null) {
-                        console.warn(`No data for symbol ${symbol}.`);
-                        return null;
-                    }
-                    return data;
+                    return data.c === 0 ? null : { symbol, ...data };
                 } catch (error) {
-                    console.error('Error fetching price:', error);
+                    console.error('Error fetching quote:', error);
                     return null;
                 }
-            }
+            };
 
-            function displayWatchlist() {
+            const renderWatchlist = () => {
                 watchlistTableBody.innerHTML = '';
-                emptyWatchlistMessage.style.display = watchlist.length === 0 ? 'block' : 'none';
-                watchlistTable.style.display = watchlist.length === 0 ? 'none' : '';
+                const showEmpty = watchlist.length === 0;
+                emptyWatchlistMessage.style.display = showEmpty ? 'block' : 'none';
+                document.getElementById('watchlist-table').style.display = showEmpty ? 'none' : 'table';
 
                 watchlist.sort((a, b) => a.symbol.localeCompare(b.symbol));
                 watchlist.forEach(stock => {
-                    const row = document.createElement('tr');
-                    const colorClass = stock.d === null ? '' : (stock.d >= 0 ? 'positive' : 'negative');
+                    const row = watchlistTableBody.insertRow();
+                    const colorClass = stock.d >= 0 ? 'positive' : 'negative';
                     row.innerHTML = `
-                        <td>${stock.symbol}</td>
-                        <td class="${colorClass}">${formatPrice(stock.c)}</td>
-                        <td class="${colorClass}">${formatPrice(stock.d)}</td>
-                        <td class="${colorClass}">${formatPercent(stock.dp)}</td>
-                        <td><button class="remove-btn" data-symbol="${stock.symbol}">X</button></td>
+                        <td><span style="font-weight: 600;">${stock.symbol}</span></td>
+                        <td class="text-right ${colorClass}">${formatPrice(stock.c)}</td>
+                        <td class="text-right ${colorClass}">${formatChange(stock.d)}</td>
+                        <td class="text-right ${colorClass}">${formatPercent(stock.dp)}</td>
+                        <td class="text-center"><button class="remove-btn" data-symbol="${stock.symbol}">&#x2715;</button></td>
                     `;
-                    watchlistTableBody.appendChild(row);
                 });
-                lastUpdated.textContent = new Date().toLocaleTimeString();
-            }
+                watchlistLastUpdated.textContent = new Date().toLocaleTimeString();
+            };
 
-            async function addTicker(symbol) {
+            const updatePrices = async () => {
+                if (watchlist.length === 0) return;
+                const updatedWatchlist = await Promise.all(watchlist.map(stock => fetchQuote(stock.symbol)));
+                watchlist = updatedWatchlist.filter(Boolean); // Filter out any null results
+                renderWatchlist();
+            };
+            
+            const addTicker = async (symbol) => {
                 if (!symbol) return;
                 symbol = symbol.toUpperCase().trim();
-                if (watchlist.some(stock => stock.symbol === symbol)) {
+                if (watchlist.some(s => s.symbol === symbol)) {
                     alert(`${symbol} is already in the watchlist.`);
                     return;
                 }
-                const priceData = await fetchPrice(symbol);
-                if (priceData) {
-                    watchlist.push({ symbol, ...priceData });
+                const quote = await fetchQuote(symbol);
+                if (quote) {
+                    watchlist.push(quote);
                     saveWatchlist();
-                    displayWatchlist();
+                    renderWatchlist();
                 } else {
-                    alert(`Could not find ticker "${symbol}"`);
+                    alert(`Could not find data for ticker "${symbol}".`);
                 }
-            }
+            };
 
-            function removeTicker(symbol) {
-                watchlist = watchlist.filter(stock => stock.symbol !== symbol);
-                saveWatchlist();
-                displayWatchlist();
-            }
-
-            async function updatePrices() {
-                if (watchlist.length === 0) return;
-                watchlist = await Promise.all(watchlist.map(async (stock) => {
-                    const priceData = await fetchPrice(stock.symbol);
-                    return priceData ? { ...stock, ...priceData } : stock;
-                }));
-                displayWatchlist();
-            }
-
-            addTickerBtn.addEventListener('click', () => {
+            tickerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
                 addTicker(tickerInput.value);
                 tickerInput.value = '';
             });
 
-            tickerInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addTicker(tickerInput.value);
-                    tickerInput.value = '';
+            watchlistTableBody.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-btn')) {
+                    const symbol = e.target.dataset.symbol;
+                    watchlist = watchlist.filter(s => s.symbol !== symbol);
+                    saveWatchlist();
+                    renderWatchlist();
                 }
             });
 
-            watchlistTableBody.addEventListener('click', (e) => {
-                if (e.target.classList.contains('remove-btn')) {
-                    removeTicker(e.target.dataset.symbol);
+            const initWatchlist = async () => {
+                const savedSymbols = JSON.parse(localStorage.getItem('watchlist')) || [];
+                if (savedSymbols.length > 0) {
+                    const initialData = await Promise.all(savedSymbols.map(fetchQuote));
+                    watchlist = initialData.filter(Boolean);
                 }
-            });
+                renderWatchlist();
+                setInterval(updatePrices, 30000); // Update every 30s
+            };
 
             // --- TRADES ---
             const tradeForm = document.getElementById('trade-log-form');
@@ -649,31 +722,74 @@
             const metricsGrid = document.getElementById('metrics-grid');
             const tradesTableBody = document.getElementById('trades-table').querySelector('tbody');
             const emptyTradesMessage = document.getElementById('empty-trades-message');
-            const tradesTable = document.getElementById('trades-table');
             const clearAllTradesBtn = document.getElementById('clear-all-trades-btn');
 
-            function loadTrades() {
-                return JSON.parse(localStorage.getItem('trades')) || [];
-            }
+            const loadTrades = () => JSON.parse(localStorage.getItem('trades')) || [];
+            const saveTrades = (trades) => localStorage.setItem('trades', JSON.stringify(trades));
 
-            function saveTrades(trades) {
-                localStorage.setItem('trades', JSON.stringify(trades));
-            }
-            
-            function calculatePnl(entry, exit, shares) {
-                 if (isNaN(entry) || isNaN(exit) || isNaN(shares) || shares <= 0) return 0;
-                 return (exit - entry) * shares;
-            }
-            
-            tradeForm.addEventListener('input', () => {
-                const entry = parseFloat(document.getElementById('trade-entry').value);
-                const exit = parseFloat(document.getElementById('trade-exit').value);
-                const shares = parseFloat(document.getElementById('trade-shares').value);
+            const calculatePnl = (entry, exit, shares) => (exit - entry) * shares;
+
+            const updatePnlPreview = () => {
+                const entry = parseFloat(document.getElementById('trade-entry').value) || 0;
+                const exit = parseFloat(document.getElementById('trade-exit').value) || 0;
+                const shares = parseFloat(document.getElementById('trade-shares').value) || 0;
                 const pnl = calculatePnl(entry, exit, shares);
-                pnlPreview.textContent = `P&L: $${pnl.toFixed(2)}`;
-                pnlPreview.className = pnl >= 0 ? 'positive' : 'negative';
-            });
+                pnlPreview.textContent = `P&L: ${formatPrice(pnl)}`;
+                pnlPreview.className = `form-group-full ${pnl >= 0 ? 'positive' : 'negative'}`;
+            };
 
+            const renderTrades = () => {
+                const trades = loadTrades();
+                tradesTableBody.innerHTML = '';
+                const showEmpty = trades.length === 0;
+                emptyTradesMessage.style.display = showEmpty ? 'block' : 'none';
+                document.getElementById('trades-table').style.display = showEmpty ? 'none' : 'table';
+                
+                trades.forEach((trade, index) => {
+                    const pnlClass = trade.pnl >= 0 ? 'positive' : 'negative';
+                    const row = tradesTableBody.insertRow();
+                    row.innerHTML = `
+                        <td><span style="font-weight: 600;">${trade.ticker}</span></td>
+                        <td class="text-right">${formatPrice(trade.entry)}</td>
+                        <td class="text-right">${formatPrice(trade.exit)}</td>
+                        <td class="text-right">${trade.shares}</td>
+                        <td class="text-right ${pnlClass}">${formatPrice(trade.pnl)}</td>
+                        <td>${trade.notes}</td>
+                        <td>${trade.date}</td>
+                        <td class="text-center"><button class="remove-btn" data-index="${index}">&#x2715;</button></td>
+                    `;
+                });
+            };
+
+            const updateMetrics = () => {
+                const trades = loadTrades();
+                const totalTrades = trades.length;
+                if (totalTrades === 0) {
+                    metricsGrid.innerHTML = ''; // Clear if no trades
+                    return;
+                }
+                const winning = trades.filter(t => t.pnl > 0);
+                const losing = trades.filter(t => t.pnl < 0);
+                const totalPnl = trades.reduce((sum, t) => sum + t.pnl, 0);
+                const winRate = totalTrades > 0 ? (winning.length / totalTrades) * 100 : 0;
+                const avgWin = winning.length > 0 ? winning.reduce((s, t) => s + t.pnl, 0) / winning.length : 0;
+                const avgLoss = losing.length > 0 ? losing.reduce((s, t) => s + t.pnl, 0) / losing.length : 0;
+                
+                metricsGrid.innerHTML = `
+                    <div class="metric-card card"><div class="metric-card-label">Total P&L</div><div class="metric-card-value ${totalPnl >= 0 ? 'positive' : 'negative'}">${formatPrice(totalPnl)}</div></div>
+                    <div class="metric-card card"><div class="metric-card-label">Win Rate</div><div class="metric-card-value">${winRate.toFixed(1)}%</div></div>
+                    <div class="metric-card card"><div class="metric-card-label">Avg. Win</div><div class="metric-card-value positive">${formatPrice(avgWin)}</div></div>
+                    <div class="metric-card card"><div class="metric-card-label">Avg. Loss</div><div class="metric-card-value negative">${formatPrice(avgLoss)}</div></div>
+                    <div class="metric-card card"><div class="metric-card-label">Total Trades</div><div class="metric-card-value">${totalTrades}</div></div>
+                `;
+            };
+
+            const updateTradesUI = () => {
+                renderTrades();
+                updateMetrics();
+            };
+
+            tradeForm.addEventListener('input', updatePnlPreview);
             tradeForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const newTrade = {
@@ -684,120 +800,134 @@
                     notes: document.getElementById('trade-notes').value.trim(),
                     date: new Date().toISOString().split('T')[0]
                 };
-
-                if (!newTrade.ticker || !newTrade.entry || !newTrade.exit || !newTrade.shares) {
-                    alert('Please fill in all required fields.');
-                    return;
-                }
-                 if (newTrade.entry <= 0 || newTrade.exit <= 0 || newTrade.shares <= 0) {
-                    alert('Prices and shares must be positive numbers.');
-                    return;
-                }
-
                 newTrade.pnl = calculatePnl(newTrade.entry, newTrade.exit, newTrade.shares);
-
+                
                 const trades = loadTrades();
-                trades.unshift(newTrade); // Add to the beginning for reverse chronological order
+                trades.unshift(newTrade);
                 saveTrades(trades);
                 updateTradesUI();
                 tradeForm.reset();
-                pnlPreview.textContent = 'P&L: $0.00';
-                pnlPreview.className = '';
+                updatePnlPreview();
             });
             
-             function deleteTrade(index) {
-                let trades = loadTrades();
-                trades.splice(index, 1);
-                saveTrades(trades);
-                updateTradesUI();
-            }
-
-            tradesTableBody.addEventListener('click', e => {
-                if(e.target.classList.contains('delete-trade-btn')) {
-                    if(confirm('Are you sure you want to delete this trade?')) {
-                        deleteTrade(parseInt(e.target.dataset.index));
-                    }
-                }
-            });
-
-
             clearAllTradesBtn.addEventListener('click', () => {
-                if (confirm('Delete all trades? This cannot be undone.')) {
+                if (confirm('Are you sure you want to delete all trades? This cannot be undone.')) {
                     saveTrades([]);
                     updateTradesUI();
                 }
             });
 
-            function calculateMetrics() {
-                const trades = loadTrades();
-                const totalTrades = trades.length;
-                if (totalTrades === 0) return { totalPnl: 0, winRate: 0, avgWin: 0, avgLoss: 0, totalTrades: 0, winningTrades: 0, losingTrades: 0 };
+            tradesTableBody.addEventListener('click', (e) => {
+                 if (e.target.classList.contains('remove-btn')) {
+                    const index = parseInt(e.target.dataset.index, 10);
+                    let trades = loadTrades();
+                    trades.splice(index, 1);
+                    saveTrades(trades);
+                    updateTradesUI();
+                }
+            });
+            
+            // --- NEWS ---
+            const newsGrid = document.getElementById('news-grid');
+            const emptyNewsMessage = document.getElementById('empty-news-message');
+            const newsLastUpdated = document.getElementById('news-last-updated');
+            const refreshNewsBtn = document.getElementById('refresh-news-btn');
 
-                const winningTrades = trades.filter(t => t.pnl > 0);
-                const losingTrades = trades.filter(t => t.pnl < 0);
+            const renderNewsSkeleton = () => {
+                newsGrid.innerHTML = Array.from({ length: 6 }).map(() => `
+                    <div class="card news-card">
+                        <div class="skeleton news-card-img-link"></div>
+                        <div class="news-card-content">
+                            <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                            <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                            <br>
+                            <div class="skeleton skeleton-text" style="width: 100%;"></div>
+                            <div class="skeleton skeleton-text" style="width: 100%;"></div>
+                            <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                `).join('');
+                emptyNewsMessage.style.display = 'none';
+            };
 
-                const totalPnl = trades.reduce((sum, t) => sum + t.pnl, 0);
-                const winRate = (winningTrades.length / totalTrades) * 100;
-                const avgWin = winningTrades.length > 0 ? winningTrades.reduce((sum, t) => sum + t.pnl, 0) / winningTrades.length : 0;
-                const avgLoss = losingTrades.length > 0 ? losingTrades.reduce((sum, t) => sum + t.pnl, 0) / losingTrades.length : 0;
-                
-                return {
-                    totalPnl: totalPnl,
-                    winRate: winRate,
-                    avgWin: avgWin,
-                    avgLoss: avgLoss,
-                    totalTrades: totalTrades,
-                    winningTrades: winningTrades.length,
-                    losingTrades: losingTrades.length
-                };
-            }
+            const renderNews = (articles) => {
+                newsGrid.innerHTML = '';
+                const showEmpty = !articles || articles.length === 0;
+                emptyNewsMessage.style.display = showEmpty ? 'block' : 'none';
 
-            function displayMetrics() {
-                const metrics = calculateMetrics();
-                metricsGrid.innerHTML = `
-                    <div class="metric-card"><div class="metric-card-label">Total P&L</div><div class="metric-card-value ${metrics.totalPnl >= 0 ? 'positive' : 'negative'}">$${metrics.totalPnl.toFixed(2)}</div></div>
-                    <div class="metric-card"><div class="metric-card-label">Win Rate</div><div class="metric-card-value">${metrics.winRate.toFixed(1)}%</div></div>
-                    <div class="metric-card"><div class="metric-card-label">Avg Win</div><div class="metric-card-value positive">$${metrics.avgWin.toFixed(2)}</div></div>
-                    <div class="metric-card"><div class="metric-card-label">Avg Loss</div><div class="metric-card-value negative">$${metrics.avgLoss.toFixed(2)}</div></div>
-                    <div class="metric-card"><div class="metric-card-label">Total Trades</div><div class="metric-card-value">${metrics.totalTrades}</div></div>
-                    <div class="metric-card"><div class="metric-card-label">Winning Trades</div><div class="metric-card-value positive">${metrics.winningTrades}</div></div>
-                    <div class="metric-card"><div class="metric-card-label">Losing Trades</div><div class="metric-card-value negative">${metrics.losingTrades}</div></div>
-                `;
-            }
+                if (showEmpty) return;
 
-            function displayRecentTrades() {
-                const trades = loadTrades();
-                tradesTableBody.innerHTML = '';
-                emptyTradesMessage.style.display = trades.length === 0 ? 'block' : 'none';
-                tradesTable.style.display = trades.length === 0 ? 'none' : '';
-
-                trades.forEach((trade, index) => {
-                    const row = document.createElement('tr');
-                    const pnlClass = trade.pnl >= 0 ? 'positive' : 'negative';
-                    row.innerHTML = `
-                        <td>${trade.ticker}</td>
-                        <td>${trade.entry.toFixed(2)}</td>
-                        <td>${trade.exit.toFixed(2)}</td>
-                        <td>${trade.shares}</td>
-                        <td class="${pnlClass}">${trade.pnl.toFixed(2)}</td>
-                        <td>${trade.notes}</td>
-                        <td>${trade.date}</td>
-                        <td><button class="delete-trade-btn" data-index="${index}">X</button></td>
+                articles.forEach(article => {
+                    if (!article.headline || !article.url) return;
+                    const card = document.createElement('div');
+                    card.className = 'card news-card';
+                    card.innerHTML = `
+                        <a href="${article.url}" target="_blank" rel="noopener noreferrer" class="news-card-img-link">
+                            ${article.image ? `<img src="${article.image}" alt="" class="news-card-img" loading="lazy">` : ''}
+                        </a>
+                        <div class="news-card-content">
+                             <a href="${article.url}" target="_blank" rel="noopener noreferrer">
+                                <h3 class="news-card-headline">${article.headline}</h3>
+                             </a>
+                            <p class="news-card-summary">${article.summary || 'No summary available.'}</p>
+                            <div class="news-card-footer">
+                                <span class="news-card-source">${article.source}</span>
+                                <span>${new Date(article.datetime * 1000).toLocaleString()}</span>
+                            </div>
+                        </div>
                     `;
-                    tradesTableBody.appendChild(row);
+                    newsGrid.appendChild(card);
                 });
-            }
+            };
 
-            function updateTradesUI() {
-                displayMetrics();
-                displayRecentTrades();
-            }
+            const loadNews = async () => {
+                renderNewsSkeleton();
+                refreshNewsBtn.disabled = true;
 
-            // --- INITIALIZATION ---
-            loadWatchlistAndFetch();
-            setInterval(updatePrices, 30000);
+                try {
+                    const response = await fetch(`https://finnhub.io/api/v1/news?category=general&token=${finnhubApiKey}`);
+                    if (!response.ok) {
+                         // Handle rate limiting specifically
+                        if (response.status === 429) {
+                            console.warn('News API rate limit hit. Retrying in 60 seconds.');
+                            setTimeout(loadNews, 60000);
+                            // Keep skeleton loader but maybe show a small message
+                            return;
+                        }
+                        throw new Error('Failed to fetch news');
+                    }
+                    const news = await response.json();
+                    localStorage.setItem('newsCache', JSON.stringify(news));
+                    localStorage.setItem('newsCacheTimestamp', new Date().getTime());
+                    renderNews(news);
+                    newsLastUpdated.textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+                } catch (error) {
+                    console.error('Error fetching news:', error);
+                    emptyNewsMessage.style.display = 'block';
+                    newsGrid.innerHTML = '';
+                } finally {
+                    refreshNewsBtn.disabled = false;
+                }
+            };
+
+            const initNews = () => {
+                const cachedNews = localStorage.getItem('newsCache');
+                const cacheTime = localStorage.getItem('newsCacheTimestamp');
+                if (cachedNews && cacheTime && (new Date().getTime() - cacheTime < 300000)) { // 5 min cache
+                    renderNews(JSON.parse(cachedNews));
+                    newsLastUpdated.textContent = `Last updated: ${new Date(parseInt(cacheTime)).toLocaleTimeString()}`;
+                } else {
+                    loadNews();
+                }
+                setInterval(loadNews, 300000); // Auto-refresh every 5 minutes
+            };
+            
+            refreshNewsBtn.addEventListener('click', loadNews);
+
+            // --- INITIALIZE APP ---
+            initWatchlist();
             updateTradesUI();
-
+            initNews();
         });
     </script>
 </body>
