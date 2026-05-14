@@ -463,6 +463,7 @@
                 <button class="tab-button active" data-tab="news">News</button>
                 <button class="tab-button" data-tab="watchlist">Watchlist</button>
                 <button class="tab-button" data-tab="trades">Trades</button>
+                <button class="tab-button" data-tab="discussions">Discussions</button>
             </nav>
         </div>
     </div>
@@ -565,6 +566,30 @@
              <div id="empty-trades-message" class="empty-state" style="display: none;">
                 <p>No trades logged yet. Use the form above to add your first trade.</p>
             </div>
+        </div>
+        
+        <!-- DISCUSSIONS TAB -->
+        <div id="discussions" class="tab-content">
+            <h2 class="section-header">Community Discussions</h2>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://vibe-money-maker.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         </div>
     </main>
 
