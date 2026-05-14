@@ -5,42 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Watchlist & Trade Tracker</title>
     <style>
+        :root {
+            --bg-color-primary: #ffffff;
+            --bg-color-secondary: #f0f2f5;
+            --bg-color-tertiary: #e0e2e5;
+            --text-color-primary: #333333;
+            --text-color-secondary: #555555;
+            --border-color: #e0e0e0;
+            --primary-accent: #007bff;
+            --primary-accent-hover: #0056b3;
+            --positive-color: #28a745;
+            --negative-color: #dc3545;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --bg-color-primary: #121212;
+            --bg-color-secondary: #1f1f1f;
+            --bg-color-tertiary: #333333;
+            --text-color-primary: #e0e0e0;
+            --text-color-secondary: #aaaaaa;
+            --border-color: #333333;
+            --primary-accent: #66b3ff;
+            --primary-accent-hover: #4da6ff;
+            --positive-color: #28a745; /* Can adjust for dark mode if desired */
+            --negative-color: #dc3545; /* Can adjust for dark mode if desired */
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
         body {
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: sans-serif;
+            background-color: var(--bg-color-primary);
+            color: var(--text-color-primary);
+            font-family: 'Inter', sans-serif; /* Using Inter, will add Google Fonts link */
             margin: 0;
             padding-bottom: 60px; /* Footer height */
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         header {
             text-align: center;
             padding: 20px 0;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-color-primary);
+            position: relative; /* For theme toggle positioning */
+        }
+        
+        h1 {
+            color: var(--text-color-primary);
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: var(--text-color-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            color: var(--primary-accent);
         }
 
         .tabs {
             display: flex;
             justify-content: center;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-color-primary);
+            box-shadow: 0 2px 4px var(--shadow-color);
         }
         .tab-button {
             background: none;
             border: none;
-            color: #e0e0e0;
+            color: var(--text-color-secondary);
             padding: 15px 20px;
             cursor: pointer;
             font-size: 1em;
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+        }
+        .tab-button:hover {
+            color: var(--primary-accent);
         }
         .tab-button.active {
-            border-bottom: 2px solid #007bff;
-            color: #007bff;
+            border-bottom: 2px solid var(--primary-accent);
+            color: var(--primary-accent);
+            font-weight: bold;
         }
 
         main {
             padding: 20px;
-            max-width: 1000px;
-            margin: 0 auto;
+            max-width: 1200px; /* Increased max-width for more spacious feel */
+            margin: 20px auto; /* Added top/bottom margin */
+            background-color: var(--bg-color-primary);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow-color);
         }
         .tab-content {
             display: none;
@@ -49,190 +112,295 @@
             display: block;
         }
 
+        .section-header {
+            font-size: 1.8em;
+            color: var(--text-color-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
         .add-ticker {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+            gap: 10px; /* Space between input and button */
+            margin-bottom: 30px; /* More space */
         }
 
         #ticker-input {
-            background-color: #333;
-            color: #e0e0e0;
-            border: 1px solid #555;
-            padding: 10px;
-            border-radius: 5px;
+            flex-grow: 1;
+            background-color: var(--bg-color-secondary);
+            color: var(--text-color-primary);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px; /* Slightly more padding */
+            border-radius: 8px; /* More rounded */
             font-size: 1em;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        #ticker-input:focus {
+            border-color: var(--primary-accent);
+            outline: none;
         }
 
         #add-ticker-btn {
-            background-color: #007bff;
+            background-color: var(--primary-accent);
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 12px 25px; /* More padding */
+            border-radius: 8px; /* More rounded */
             cursor: pointer;
-            margin-left: 10px;
             font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         #add-ticker-btn:hover {
-            background-color: #0056b3;
+            background-color: var(--primary-accent-hover);
+            transform: translateY(-2px);
+        }
+        #add-ticker-btn:active {
+            transform: translateY(0);
         }
 
         #watchlist-container, #trades-container {
             overflow-x: auto;
+            margin-top: 20px;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate; /* Use separate for rounded borders */
+            border-spacing: 0;
+            border-radius: 8px; /* Rounded table corners */
+            overflow: hidden; /* Ensures rounded corners are visible */
+            box-shadow: 0 2px 8px var(--shadow-color);
         }
 
         table th, table td {
-            padding: 15px;
+            padding: 15px 20px; /* More padding */
             text-align: left;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color-primary);
+        }
+        table td {
+            background-color: var(--bg-color-primary);
         }
 
         table th {
-            background-color: #1f1f1f;
+            background-color: var(--bg-color-tertiary);
+            font-weight: bold;
+            color: var(--text-color-secondary);
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        table tr:last-child td {
+            border-bottom: none; /* No border for the last row */
         }
 
-        .positive { color: #28a745; }
-        .negative { color: #dc3545; }
+        .positive { color: var(--positive-color); }
+        .negative { color: var(--negative-color); }
 
         .remove-btn, .delete-trade-btn {
             background: none;
-            border: none;
-            color: #dc3545;
+            border: 1px solid var(--negative-color);
+            color: var(--negative-color);
+            padding: 5px 10px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .remove-btn:hover, .delete-trade-btn:hover {
-            color: #f5c6cb;
+            background-color: var(--negative-color);
+            color: white;
         }
 
         footer {
             text-align: center;
             padding: 20px 0;
-            border-top: 1px solid #333;
+            border-top: 1px solid var(--border-color);
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: #121212;
+            background-color: var(--bg-color-primary);
+            color: var(--text-color-secondary);
+            box-shadow: 0 -2px 4px var(--shadow-color);
         }
 
         #empty-watchlist-message, #empty-trades-message {
             text-align: center;
-            margin-top: 20px;
-            color: #777;
+            margin-top: 40px;
+            color: var(--text-color-secondary);
+            font-style: italic;
             display: none; /* Hidden by default */
+            padding: 20px;
+            background-color: var(--bg-color-secondary);
+            border-radius: 8px;
         }
         
         /* Trades Section Styles */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted min-width */
             gap: 15px;
             margin-bottom: 30px;
         }
         .metric-card {
-            background-color: #1f1f1f;
-            padding: 15px;
-            border-radius: 8px;
+            background-color: var(--bg-color-secondary);
+            padding: 20px; /* More padding */
+            border-radius: 10px; /* More rounded */
             text-align: center;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         .metric-card-label {
             font-size: 0.9em;
-            color: #aaa;
-            margin-bottom: 5px;
+            color: var(--text-color-secondary);
+            margin-bottom: 8px; /* More space */
         }
         .metric-card-value {
-            font-size: 1.5em;
+            font-size: 1.8em; /* Larger value */
             font-weight: bold;
+            color: var(--text-color-primary);
         }
 
         .trade-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted min-width */
+            gap: 15px; /* More space */
             align-items: flex-end;
-            background-color: #1f1f1f;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+            background-color: var(--bg-color-secondary);
+            padding: 30px; /* More padding */
+            border-radius: 10px; /* More rounded */
+            margin-bottom: 40px; /* More space */
+            box-shadow: 0 2px 10px var(--shadow-color);
         }
         .trade-form input {
-             background-color: #333;
-            color: #e0e0e0;
-            border: 1px solid #555;
-            padding: 10px;
-            border-radius: 5px;
+            background-color: var(--bg-color-tertiary);
+            color: var(--text-color-primary);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 6px;
             font-size: 1em;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .trade-form input:focus {
+            border-color: var(--primary-accent);
+            outline: none;
         }
         .trade-form .form-group {
             display: flex;
             flex-direction: column;
         }
         .trade-form label {
-            margin-bottom: 5px;
+            margin-bottom: 8px; /* More space */
             font-size: 0.9em;
-            color: #aaa;
+            color: var(--text-color-secondary);
         }
         #log-trade-btn {
-            background-color: #28a745;
+            background-color: var(--positive-color); /* Green for logging trade */
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1em;
+            font-weight: bold;
             grid-column: 1 / -1; /* Span full width */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        #log-trade-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
         }
         #pnl-preview {
             text-align: center;
-            padding: 10px;
+            padding: 15px;
             font-weight: bold;
             grid-column: 1 / -1;
+            background-color: var(--bg-color-tertiary);
+            border-radius: 8px;
+            margin-top: 10px;
         }
 
         .trades-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
         #clear-all-trades-btn {
-            background-color: #dc3545;
+            background-color: var(--negative-color);
             color: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
+            padding: 10px 18px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        #clear-all-trades-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
         }
 
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) { /* Adjusted breakpoint */
             main {
-                padding: 10px;
+                padding: 15px;
+                margin: 15px auto;
             }
             table th, table td {
-                padding: 10px 5px;
+                padding: 12px 10px;
+            }
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
             }
 
             .add-ticker {
                 flex-direction: column;
+                gap: 15px;
             }
 
-            #ticker-input {
+            #ticker-input, #add-ticker-btn {
                 width: 100%;
                 box-sizing: border-box;
+                margin-left: 0;
+            }
+            #add-ticker-btn {
+                padding: 15px;
             }
 
-            #add-ticker-btn {
+            .trade-form {
+                grid-template-columns: 1fr; /* Stack inputs on small screens */
+                padding: 20px;
+            }
+            .trade-form .form-group {
                 width: 100%;
-                margin-top: 10px;
-                margin-left: 0;
+            }
+            #log-trade-btn, #pnl-preview {
+                 grid-column: auto; /* Reset grid-column for smaller screens */
+                 width: 100%;
+                 box-sizing: border-box;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .section-header {
+                font-size: 1.5em;
+            }
+            .metric-card-value {
+                font-size: 1.4em;
+            }
+            .remove-btn, .delete-trade-btn {
+                font-size: 0.8em;
+                padding: 3px 6px;
             }
         }
     </style>
