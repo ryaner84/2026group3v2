@@ -467,6 +467,7 @@
                 <button class="tab-button active" data-tab="news">News</button>
                 <button class="tab-button" data-tab="watchlist">Watchlist</button>
                 <button class="tab-button" data-tab="trades">Trades</button>
+                <button class="tab-button" data-tab="portfolio">Portfolio</button>
                 <button class="tab-button" data-tab="feedback">Feedback</button>
             </nav>
         </div>
@@ -568,6 +569,29 @@
             </div>
              <div id="empty-trades-message" class="empty-state" style="display: none;">
                 <p>No trades logged yet. Use the form above to add your first trade.</p>
+            </div>
+        </div>
+
+        <!-- PORTFOLIO TAB -->
+        <div id="portfolio" class="tab-content">
+            <div id="portfolio-metrics-grid" class="metrics-grid"></div>
+            <div class="trades-header">
+                <h2>Performance by Ticker</h2>
+            </div>
+            <div class="card">
+                <table id="portfolio-table">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th class="text-right">Total P&L ($)</th>
+                            <th class="text-right">Total Trades</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="empty-portfolio-message" class="empty-state" style="display: none;">
+                <p>No trade data available to build a portfolio view. Log some trades first.</p>
             </div>
         </div>
         
@@ -811,9 +835,69 @@
                 `;
             };
 
+            // --- PORTFOLIO ---
+            const portfolioMetricsGrid = document.getElementById('portfolio-metrics-grid');
+            const portfolioTableBody = document.getElementById('portfolio-table').querySelector('tbody');
+            const emptyPortfolioMessage = document.getElementById('empty-portfolio-message');
+
+            const renderPortfolio = () => {
+                const trades = loadTrades();
+                const showEmpty = trades.length === 0;
+
+                emptyPortfolioMessage.style.display = showEmpty ? 'block' : 'none';
+                document.getElementById('portfolio-metrics-grid').style.display = showEmpty ? 'none' : 'grid';
+                document.getElementById('portfolio-table').parentElement.style.display = showEmpty ? 'none' : 'block';
+
+                if (showEmpty) {
+                    portfolioMetricsGrid.innerHTML = '';
+                    portfolioTableBody.innerHTML = '';
+                    return;
+                }
+
+                // Calculate overall metrics
+                const totalTrades = trades.length;
+                const winning = trades.filter(t => t.pnl > 0);
+                const totalPnl = trades.reduce((sum, t) => sum + t.pnl, 0);
+                const winRate = totalTrades > 0 ? (winning.length / totalTrades) * 100 : 0;
+
+                portfolioMetricsGrid.innerHTML = `
+                    <div class="metric-card card"><div class="metric-card-label">Total P&L</div><div class="metric-card-value ${totalPnl >= 0 ? 'positive' : 'negative'}">${formatPrice(totalPnl)}</div></div>
+                    <div class="metric-card card"><div class="metric-card-label">Win Rate</div><div class="metric-card-value">${winRate.toFixed(1)}%</div></div>
+                    <div class="metric-card card"><div class="metric-card-label">Total Trades</div><div class="metric-card-value">${totalTrades}</div></div>
+                `;
+
+                // Calculate per-ticker stats
+                const portfolio = trades.reduce((acc, trade) => {
+                    if (!acc[trade.ticker]) {
+                        acc[trade.ticker] = { totalPnl: 0, tradeCount: 0 };
+                    }
+                    acc[trade.ticker].totalPnl += trade.pnl;
+                    acc[trade.ticker].tradeCount += 1;
+                    return acc;
+                }, {});
+
+                const sortedPortfolio = Object.entries(portfolio).sort(([, a], [, b]) => b.totalPnl - a.totalPnl);
+
+                portfolioTableBody.innerHTML = '';
+                sortedPortfolio.forEach(([ticker, data]) => {
+                    const pnlClass = data.totalPnl >= 0 ? 'positive' : 'negative';
+                    const row = portfolioTableBody.insertRow();
+                    row.innerHTML = `
+                        <td><span style="font-weight: 600;">${ticker}</span></td>
+                        <td class="text-right ${pnlClass}">${formatPrice(data.totalPnl)}</td>
+                        <td class="text-right">${data.tradeCount}</td>
+                    `;
+                });
+            };
+
+            const updatePortfolioUI = () => {
+                renderPortfolio();
+            };
+
             const updateTradesUI = () => {
                 renderTrades();
                 updateMetrics();
+                updatePortfolioUI();
             };
 
             tradeForm.addEventListener('input', updatePnlPreview);
